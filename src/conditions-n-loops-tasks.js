@@ -338,8 +338,39 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = number.toString().split('').map(Number);
+
+  function findSwapIndex(i) {
+    if (i < 0 || digits[i] < digits[i + 1]) {
+      return i;
+    }
+    return findSwapIndex(i - 1);
+  }
+
+  const swapIndex = findSwapIndex(digits.length - 2);
+
+  if (swapIndex === -1) {
+    return number;
+  }
+
+  const swapValue = digits[swapIndex];
+
+  const rightDigits = digits.slice(swapIndex + 1);
+  const largerDigitIndex = rightDigits.findIndex((d) => d > swapValue);
+  const newSwapValue = rightDigits[largerDigitIndex];
+  rightDigits[largerDigitIndex] = swapValue;
+
+  const sortedRightDigits = rightDigits.sort((a, b) => a - b);
+
+  const result = parseInt(
+    [...digits.slice(0, swapIndex), newSwapValue, ...sortedRightDigits].join(
+      ''
+    ),
+    10
+  );
+
+  return result;
 }
 
 module.exports = {
