@@ -163,15 +163,21 @@ function convertNumberToString(numberStr) {
   for (let i = 0; i < numberStr.length; i += 1) {
     const char = numberStr[i];
 
-    if (char === '-') {
-      isNegative = true;
-    } else if (char === '.') {
-      result += ' point';
-    } else if (char === ',') {
-      result += ' point';
-    } else {
-      const digitWord = digitWords[parseInt(char, 10)];
-      result += (result.length > 0 ? ' ' : '') + digitWord;
+    switch (char) {
+      case '-':
+        isNegative = true;
+        break;
+      case '.':
+        result += ' point';
+        break;
+      case ',':
+        result += ' point';
+        break;
+      default: {
+        const digitWord = digitWords[parseInt(char, 10)];
+        result += (result.length > 0 ? ' ' : '') + digitWord;
+        break;
+      }
     }
   }
 
