@@ -348,8 +348,50 @@ function getBalanceIndex(arr) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const arr = [];
+  for (let i = 0; i < size; i += 1) {
+    arr[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      arr[i][j] = 0;
+    }
+  }
+  let count = 1;
+  let k = 0;
+  let m = arr.length;
+  let l = 0;
+  let n = arr[0].length;
+
+  while (k < m && l < n) {
+    for (let i = l; i < n; i += 1) {
+      arr[k][i] = count;
+      count += 1;
+    }
+    k += 1;
+
+    for (let i = k; i < m; i += 1) {
+      arr[i][n - 1] = count;
+      count += 1;
+    }
+    n -= 1;
+
+    if (k < m) {
+      for (let i = n - 1; i >= l; i -= 1) {
+        arr[m - 1][i] = count;
+        count += 1;
+      }
+      m -= 1;
+    }
+
+    if (l < n) {
+      for (let i = m - 1; i >= k; i -= 1) {
+        arr[i][l] = count;
+        count += 1;
+      }
+      l += 1;
+    }
+  }
+  return arr;
 }
 
 /**
@@ -367,8 +409,33 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  if (!matrix || matrix.length === 0 || matrix[0].length !== matrix.length) {
+    throw new Error('Invalid matrix');
+  }
+
+  const n = matrix.length;
+  const newMatrix = matrix;
+  for (let layer = 0; layer < n / 2; layer += 1) {
+    const first = layer;
+    const last = n - 1 - layer;
+
+    for (let i = first; i < last; i += 1) {
+      const offset = i - first;
+
+      const top = matrix[first][i];
+
+      newMatrix[first][i] = matrix[last - offset][first];
+
+      newMatrix[last - offset][first] = matrix[last][last - offset];
+
+      newMatrix[last][last - offset] = matrix[i][last];
+
+      newMatrix[i][last] = top;
+    }
+  }
+
+  return newMatrix;
 }
 /**
  * Sorts an array of numbers in ascending order in place.
