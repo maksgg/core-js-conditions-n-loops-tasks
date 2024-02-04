@@ -488,30 +488,17 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  if (
-    typeof str !== 'string' ||
-    typeof iterations !== 'number' ||
-    iterations < 0
-  ) {
-    throw new Error('Invalid input');
-  }
-
   let result = str;
-
-  for (let iter = 0; iter < iterations; iter += 1) {
-    let shuffledStr = '';
-
-    for (let i = 0; i < result.length; i += 2) {
-      shuffledStr += result[i];
+  for (let i = 1; i <= iterations; i += 1) {
+    let firstStr = '';
+    let secondStr = '';
+    for (let j = 0; j < str.length; j += 1) {
+      if (j % 2 === 0) firstStr += result[j];
+      if (j % 2 === 1) secondStr += result[j];
     }
-
-    for (let i = 1; i < result.length; i += 2) {
-      shuffledStr += result[i];
-    }
-
-    result = shuffledStr;
+    result = firstStr + secondStr;
+    if (result === str) return shuffleChar(str, iterations % i);
   }
-
   return result;
 }
 
@@ -533,38 +520,32 @@ function shuffleChar(str, iterations) {
  * @returns {number} The nearest larger number, or original number if none exists.
  */
 function getNearestBigger(number) {
-  const digits = number.toString().split('').map(Number);
-
-  function findSwapIndex(i) {
-    if (i < 0 || digits[i] < digits[i + 1]) {
-      return i;
+  const numArr = Array.from(`${number}`, (el) => Number(el));
+  let index;
+  let el;
+  for (let i = numArr.length - 1; i > 0; i -= 1) {
+    if (numArr[i] > numArr[i - 1]) {
+      index = i - 1;
+      el = numArr[index];
+      break;
     }
-    return findSwapIndex(i - 1);
   }
-
-  const swapIndex = findSwapIndex(digits.length - 2);
-
-  if (swapIndex === -1) {
-    return number;
+  const leftArr = numArr.splice(0, index);
+  const rightPart = numArr.sort((a, b) => a - b);
+  let nextEl;
+  let indexNextEl;
+  for (let i = 0; i < rightPart.length; i += 1) {
+    if (rightPart[i] === el) {
+      nextEl = rightPart[i + 1];
+      indexNextEl = i + 1;
+    }
   }
-
-  const swapValue = digits[swapIndex];
-
-  const rightDigits = digits.slice(swapIndex + 1);
-  const largerDigitIndex = rightDigits.findIndex((d) => d > swapValue);
-  const newSwapValue = rightDigits[largerDigitIndex];
-  rightDigits[largerDigitIndex] = swapValue;
-
-  const sortedRightDigits = rightDigits.sort((a, b) => a - b);
-
-  const result = parseInt(
-    [...digits.slice(0, swapIndex), newSwapValue, ...sortedRightDigits].join(
-      ''
-    ),
-    10
-  );
-
-  return result;
+  const rightArr = [
+    ...rightPart.splice(0, indexNextEl),
+    ...rightPart.splice(1),
+  ];
+  const resNumber = +[...leftArr, nextEl, ...rightArr].join('');
+  return resNumber;
 }
 
 module.exports = {
